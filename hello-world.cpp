@@ -23,12 +23,13 @@ public:
 class MyFrame: public wxFrame
 {
 public:
-    MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
+  MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
   void OnQuit(wxCommandEvent& event);
-    void OnHello(wxCommandEvent& event);
-    void OnExit(wxCommandEvent& event);
-    void OnAbout(wxCommandEvent& event);
-  private:
+  void OnHello(wxCommandEvent& event);
+  void OnExit(wxCommandEvent& event);
+  void OnAbout(wxCommandEvent& event);
+  void OnAbout2(wxCommandEvent& event);
+private:
   DECLARE_EVENT_TABLE()
 };
 
@@ -56,20 +57,14 @@ enum
 {
     ID_Quit = 1,
     ID_About,
+    ID_About2,
     ID_Hello,
 };
-
-// EGIN_EVENT_TABLE(MyFrame2, wxFrame)
-//     EVT_MENU(XRCID("menu_quit"),  MyFrame::OnQuit)
-//     EVT_MENU(XRCID("menu_about"), MyFrame::OnAbout)
-//     EVT_MENU(XRCID("menu_dlg1"), MyFrame::OnDlg1)
-//     EVT_MENU(XRCID("menu_dlg2"), MyFrame::OnDlg2)
-// END_EVENT_TABLE()
-
 
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
   EVT_MENU(ID_Quit,  MyFrame::OnQuit)
   EVT_MENU(ID_About, MyFrame::OnAbout)
+  EVT_MENU(ID_About2, MyFrame::OnAbout2)
 END_EVENT_TABLE()
 
 IMPLEMENT_APP(MyApp)
@@ -96,6 +91,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     wxMenu *menuFile = new wxMenu;
     menuFile->Append(ID_Hello, L"&Hello...\tCtrl-H",
                      L"Help string shown in status bar for this menu item");
+    menuFile->Append(ID_About2, L"&About2..." );
     menuFile->AppendSeparator();
     menuFile->Append( ID_Quit, L"E&xit" );
     
@@ -111,29 +107,35 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     SetStatusText(L"Welcome to wxWidgets!" );
 }
 
-void MyFrame::OnExit(wxCommandEvent& event)
-{
+void MyFrame::OnExit(wxCommandEvent& event) {
     Close( true );
 }
-void MyFrame::OnAbout(wxCommandEvent& event)
-{
+
+void MyFrame::OnAbout(wxCommandEvent& event) {
+  wxDialog dlg;
+  wxXmlResource::Get()->LoadDialog(&dlg, this, L"dlg1");
+  dlg.ShowModal();
     wxMessageBox( L"This is a wxWidgets' Hello world sample",
                   L"About Hello World", wxOK | wxICON_INFORMATION );
 }
-void MyFrame::OnHello(wxCommandEvent& event)
-{
-    wxLogMessage(L"Hello world from wxWidgets!");
+
+void MyFrame::OnAbout2(wxCommandEvent& event) {
+  wxDialog dlg;
+  wxXmlResource::Get()->LoadDialog(&dlg, this, L"dlg1");
+  dlg.ShowModal();
+}
+
+void MyFrame::OnHello(wxCommandEvent& event) {
+  wxDialog dlg;
+  wxXmlResource::Get()->LoadDialog(&dlg, this, L"dlg1");
+  dlg.ShowModal();
+  wxLogMessage(L"Hello world from wxWidgets!");
 }
 
 void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
     Close( true );
 }
-
-
-
-/////////////////////////////////////////////////
-
 
 // ----------------------------------------------------------------------------
 // main frame
@@ -158,12 +160,20 @@ void MyFrame2::OnQuit(wxCommandEvent& WXUNUSED(event))
 
 void MyFrame2::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
+
+  wxDialog dlg;
+  wxXmlResource::Get()->LoadDialog(&dlg, this, L"dlg1");
+  dlg.ShowModal();
+
+
+  
     wxString msg;
     msg.Printf( _T("This is the about dialog of XML resources demo.\n")
                 _T("Welcome to %s"), wxVERSION_STRING);
 
     wxMessageBox(msg, L"About XML resources demo", wxOK | wxICON_INFORMATION, this);
 }
+
 
 void MyFrame2::OnDlg1(wxCommandEvent& WXUNUSED(event))
 {
